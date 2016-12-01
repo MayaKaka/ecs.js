@@ -1,2 +1,2 @@
 # ecs.js
-web entity component system
+Web entity component system
