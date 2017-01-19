@@ -1,0 +1,140 @@
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+    </head>
+    <body>
+        <div id="view">
+            <div ecs-component="Header" ecs-name="header">
+                <div ecs-component="HeaderMenu" ecs-name="headerMenu"></div>
+            </div>
+            <div ecs-component="Content" ecs-name="content">
+                <label ecs-html="title"></label>
+                <div>
+                    <input type="checkbox" ecs-checked="hasConent" />
+                    <input type="text" ecs-value="message" ecs-input="changeContent" />
+                    <input type="button" value="输出内容" ecs-click="clickButton" />
+                </div>
+            </div>
+            <div ecs-component="Footer" ecs-name="footer"></div>
+        </div>
+
+        <script src="../src/zepto.js"></script>
+        <script src="../src/base.js"></script>
+        <script src="../src/entity.js"></script>
+        <script src="../src/component.js"></script>
+        <script src="../src/ecs.js"></script>
+
+        <script>
+
+            ecs.component('Header', {
+                onCreate: function() {
+                    console.log('Header', this);
+                }
+            });
+
+            ecs.component('HeaderMenu', {
+                template: '<h3 ecs-click="changeTitle" ecs-text="title"></h3>',
+                onCreate: function() {
+                    console.log('HeaderMenu', this);
+                },
+                handlers: {
+                    changeTitle: function() {
+                        this.owner.trigger('change title');
+                    }
+                }
+            });
+
+            ecs.component('Content', {
+                template: '<h3>这里是内容，但是已经有同步的子节点了</h3>',
+                onCreate: function() {
+                    console.log('Content', this);
+                },
+                handlers: {
+                    clickButton: function(evt) {
+                        this.owner.trigger('show result', {
+                            result: this.data.message
+                        });
+                    },
+                    changeContent: function(evt) {
+                        if (this.data.message) {
+                            this.data.hasConent = true;
+                        } else {
+                            this.data.hasConent = false;
+                        }
+                    }
+                }
+            });
+
+            ecs.component('Footer', {
+                template: '<h3>这里是尾部：<span ecs-text="result"></span></h3><div ecs-component="FooterTools" ecs-name="footerTools"></div>',
+                onCreate: function() {
+                    console.log('Footer', this);
+                }
+            });
+
+            ecs.component('FooterTools', {
+                style: 'h5 {color:red;}',
+                template: '<h5>这里是底部工具栏</h5>',
+                onCreate: function() {
+                    console.log('FooterTools', this);
+                }
+            });
+
+
+            ecs.component('ExtView', {
+                style: 'li { border: 1px solid black; }',
+                template: '<label ecs-text="title" ecs-click="toggleList"></label><ul ecs-visible="showList"><li>ext 1</li><li>ext 2</li><li>ext 3</li><li>ext 4</li></li>',
+                onCreate: function() {
+                    console.log('ExtView', this);
+                },
+                handlers: {
+                    toggleList: function() {
+                        this.data.showList = !this.data.showList;
+                    }
+                }
+            });
+
+            var app = ecs.entity();
+
+            var view = ecs.instance('#view', {
+                headerMenu: {
+                    title: '这里是头部菜单，点我'
+                },
+                content: {
+                    title: '输入你想知道的问题',
+                    message: ''
+                },
+                footer: {
+
+                }
+            });
+
+            var extView = ecs.instance('<div ecs-component="ExtView">', {
+                title: '扩展列表，点我',
+                showList: true
+            });
+
+            extView.$container.appendTo(document.body);
+            
+            app.add('view', view);
+            app.add('extView', extView);
+
+            app.on('change title', function() {
+                var comp_content = this.get('content');
+
+                if (comp_content) {
+                    comp_content.data.title = comp_content.data.title + '_壹';
+                }
+            });
+
+            app.on('show result', function(data) {
+                var comp_footer = this.get('footer');
+
+                if (comp_footer) {
+                    comp_footer.data.result = data.result;
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "ecs.js",
+  "version": "1.0.0",
+  "description": "Web entity component system",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayaKaka/ecs.js.git"
+  },
+  "keywords": [
+    "MVVM",
+    "Entity-Component"
+  ],
+  "author": "MayaKaka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MayaKaka/ecs.js/issues"
+  },
+  "homepage": "https://github.com/MayaKaka/ecs.js#readme"
+}
